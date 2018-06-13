@@ -5,6 +5,13 @@ import time
 from multiprocessing import Process
 from threading import Thread
 import subprocess
+import os.path
+from sys import argv
+
+if len(argv) == 2:
+	episode_no = argv[1]
+else:
+	print("Usage: python3 hotstar_chrome.py episode_no")
 
 CHROMEDRIVER_PATH = '/Users/gg/Documents/my_stuff/automate_with_python/going_headless/chromedriver'
 
@@ -23,36 +30,39 @@ options.add_argument("--no-sandbox")
 options.add_argument("disable-infobars")
 options.add_argument("--disable-extensions")
 
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,
-                          options=options
-                         ) 
+driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, options=options) 
    
 enable_download_in_headless_chrome(driver, "/Users/gg/Movies/hotstar/")
 
 def loopA():
-   for i in range(1,5):    
-       url = "https://hsprepack.akamaized.net/videos/bharat/khamp/234/master_Layer8_00" + str(i).rjust(3, '0') + ".ts"
-       driver.get(url)
+   	for i in range(1,302):    
+   		path = '/Users/gg/Movies/hotstar/master_Layer9_00' + str(i).rjust(3, '0') + ".ts"
+   		if not (os.path.exists(path)):
+   			url = "https://hsprepack.akamaized.net/videos/bharat/khamp/"+episode_no+"/master_Layer9_00" + str(i).rjust(3, '0')+".ts"
+   			driver.get(url)
 loopA()
 time.sleep(30)
 driver.quit()
 
-url = "https://hsprepack.akamaized.net/videos/bharat/khamp/234/master_Layer8_00" 
+url = "https://hsprepack.akamaized.net/videos/bharat/khamp/235/master_Layer9_00"
 episode = url[46:51]
-episode_code = url[52:55]
-path = "/Users/gg/Movies/hotstar/" + episode+ episode_code +".ts"
+
+path = "/Users/gg/Movies/hotstar/" + episode+ episode_no +".ts"
 with open (path, "wb") as outputf:
-    for i in range(1,5,1):
-        path = '/Users/gg/Movies/hotstar/master_Layer8_00' + str(i).rjust(3, '0') + ".ts"
-        with open(path, "rb") as inputf:
-            outputf.write(inputf.read())
+    for i in range(1,302,1):
+        path = '/Users/gg/Movies/hotstar/master_Layer9_00' + str(i).rjust(3, '0') + ".ts"
+        if os.path.exists(path):
+            with open(path, 'rb') as inputf:
+                outputf.write(inputf.read())
 
-for i in range(1, 5, 1):
-	path = '/Users/gg/Movies/hotstar/master_Layer8_00' + str(i).rjust(3, '0') + ".ts"
-	os.remove(path)
+for i in range(1, 302, 1):
+    path = '/Users/gg/Movies/hotstar/master_Layer9_00' + str(i).rjust(3, '0') + ".ts"
+    if os.path.exists(path):
+        os.remove(path)
 
-path = "/Users/gg/Movies/hotstar/" + episode+ episode_code +".ts"
+path = "/Users/gg/Movies/hotstar/" + episode+ episode_no +".ts"
 infile = path
 outfile = path[-len(path):-11] + infile[25:30] + "_" + infile[30:33]+ ".mkv"
 
 subprocess.run(['ffmpeg', '-i', infile,  '-vcodec', 'copy', '-acodec', 'copy', '-f', 'matroska', outfile])
+os.remove(infile)
