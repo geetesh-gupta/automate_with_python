@@ -21,7 +21,7 @@ options.add_argument("--disable-extensions")
 driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH,
                           options=options
                          ) 
-enable_download_in_headless_chrome(driver, "/Users/gg/Movies/hotstar/")
+enable_download_in_headless_chrome(driver, "/Users/gg/Documents/my_stuff/automate_with_python/going_headless/chromedriver")
 
 def loopA():
     for i in range(10,30):    

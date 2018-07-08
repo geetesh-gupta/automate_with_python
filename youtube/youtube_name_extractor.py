@@ -2,10 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from sys import argv
 
-if len(argv) == 2:
-    url = argv[1]
-
-def name_extractor():    
+def name_extractor(url):  
+    
+    if len(argv) == 2:
+        url = argv[1]  
+    
     resp=requests.get(url)
      
     #http_respone 200 means OK status
@@ -17,5 +18,3 @@ def name_extractor():
     else:
         print("Error")
          
-name = name_extractor()
-print(name)
